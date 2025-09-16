@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FarmGenius - Farming Solutions</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --farm-green: #2e7d32;
+            --accent: #ff9933;
+            --light-green: #4caf50;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-top: 46px; /* To account for fixed header */
+            top: 0 !important; /* Important for Google Translate banner fix */
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+        }
+
+        /* Notice Bar */
+        .notice-bar {
+            background-color: var(--accent);
+            color: var(--white);
+            padding: 8px 0;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Header */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(to right, #ff9933, #fff, #138808);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--farm-green) !important;
+        }
+
+        .nav-link {
+            color: var(--dark-gray) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--farm-green) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Google Translate Customization */
+        #google_translate_element {
+            margin-left: 15px;
+        }
+        
+        .goog-te-gadget {
+            font-family: 'Roboto', sans-serif !important;
+            color: transparent !important;
+        }
+        
+        .goog-te-gadget .goog-te-combo {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .goog-te-gadget .goog-te-combo:focus {
+            outline: none;
+            border-color: var(--farm-green);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+
+        /* Google Translate Banner Fix - Hiding all banner elements */
+        .goog-te-banner-frame.skiptranslate, 
+        .goog-te-balloon-frame, 
+        .goog-tooltip, 
+        .goog-tooltip:hover, 
+        .goog-te-ftab-frame, 
+        #goog-gt-tt, 
+        .goog-te-balloon-frame, 
+        .goog-te-menu-frame, 
+        .goog-te-ftab-frame,
+        .goog-te-banner-frame,
+        .goog-te-ftab-body,
+        .goog-te-spinner-pos,
+        .goog-te-banner-content,
+        .goog-te-ftab-bar,
+        .goog-te-banner,
+        .goog-te-banner-bottom {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            width: 0 !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+            position: absolute !important;
+            top: -1000px !important;
+        }
+        
+        .goog-te-banner-frame.skiptranslate {
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+        
+        .goog-te-gadget-icon {
+            display: none !important;
+        }
+        
+        /* Fix for page jump when banner is hidden */
+        body {
+            top: 0 !important;
+        }
+        
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+        
+        #google_translate_element img {
+            display: none;
+        }
+        
+        .goog-te-gadget {
+            color: transparent !important;
+        }
+        
+        /* Remove any space taken by the banner */
+        .goog-te-banner {
+            display: none !important;
+            height: 0 !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 0 !important;
+            font-size: 0 !important;
+            max-height: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Hide the "powered by" text */
+        .goog-logo-link,
+        .goog-logo-link:link,
+        .goog-logo-link:visited,
+        .goog-logo-link:hover,
+        .goog-logo-link:active {
+            display: none !important;
+        }
+        
+        /* Hide the "about" text */
+        .goog-te-ftab-link,
+        .goog-te-ftab-link:link,
+        .goog-te-ftab-link:visited,
+        .goog-te-ftab-link:hover,
+        .goog-te-ftab-link:active {
+            display: none !important;
+        }
+        
+        /* Hide the translation balloon */
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+        
+        /* Hide the translation tooltip */
+        .goog-tooltip {
+            display: none !important;
+        }
+        
+        /* Hide the Google Translate footer */
+        .goog-te-footer {
+            display: none !important;
+        }
+        
+        /* Hide the Google Translate footer box */
+        .goog-te-ftab {
+            display: none !important;
+        }
+        
+        /* Hide the Google Translate button */
+        .goog-te-button {
+            display: none !important;
+        }
+        
+        /* Hide the Google Translate div that contains the banner */
+        div[id*="google_translate"] {
+            background: transparent !important;
+            border: none !important;
+        }
+        
+        /* Hide any element containing translation text */
+        div[style*="google"],
+        div[class*="google"],
+        span[class*="google"],
+        iframe[src*="translate"] {
+            max-height: 0 !important;
+            overflow: hidden !important;
+        }
+        
+        /* Hide any element with translation text */
+        body > div:not([class]):not([id]) {
+            display: none !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            position: relative;
+            height: 80vh;
+            overflow: hidden;
+        }
+
+        .hero-slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+        }
+
+        .hero-slide.active {
+            opacity: 1;
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            color: var(--white);
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn-cta {
+            background-color: var(--accent);
+            color: var(--white);
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+        .btn-cta:hover {
+            background-color: var(--farm-green);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Sections */
+        section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+            color: var(--farm-green);
+        }
+
+        .section-title:after {
+            content: '';
+            display: block;
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            margin: 15px auto;
+            border-radius: 2px;
+        }
+
+        /* About Section */
+        .about-img {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Services Section */
+        .service-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-icon {
+            font-size: 3rem;
+            color: var(--farm-green);
+            margin-bottom: 20px;
+        }
+
+        /* Mission & Vision */
+        .mission-vision {
+            background-color: var(--light-gray);
+        }
+
+        .mission-text {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Contact Section */
+        .contact-form {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .form-control {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .form-control:focus {
+            border-color: var(--farm-green);
+            box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.25);
+        }
+
+        .map-container {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 40px 0 20px;
+        }
+
+        /* Floating Buttons */
+        .floating-btn {
+            position: fixed;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .floating-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .chatbot-btn {
+            bottom: 30px;
+            left: 30px;
+            background: var(--farm-green);
+            color: var(--white);
+        }
+
+        .disease-btn {
+            bottom: 30px;
+            right: 30px;
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        /* Chatbot Window */
+        .chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            left: 30px;
+            width: 350px;
+            height: 450px;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .chat-header {
+            background: var(--farm-green);
+            color: var(--white);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-messages {
+            padding: 20px;
+            flex-grow: 1;
+            overflow-y: auto;
+            background: #f5f5f5;
+        }
+
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+        }
+
+        .bot-message {
+            background: #e5e5e5;
+            border-top-left-radius: 5px;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background: var(--farm-green);
+            color: white;
+            border-top-right-radius: 5px;
+            align-self: flex-end;
+            margin-left: auto;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            background: var(--white);
+            border-top: 1px solid #ddd;
+        }
+
+        .chat-input input {
+            flex-grow: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            margin-right: 10px;
+        }
+
+        .send-btn {
+            background: var(--farm-green);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .chatbot-window {
+                width: 320px;
+                height: 400px;
+            }
+            
+            #google_translate_element {
+                margin: 10px 0;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                height: 60vh;
+            }
+            
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .floating-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .chatbot-btn {
+                bottom: 20px;
+                left: 20px;
+            }
+            
+            .disease-btn {
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .chatbot-window {
+                left: 20px;
+                bottom: 80px;
+                width: calc(100% - 40px);
+            }
+            
+            #google_translate_element {
+                margin: 10px 0;
+            }
+            
+            .goog-te-gadget .goog-te-combo {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 576px) {
+            section {
+                padding: 60px 0;
+            }
+            
+            .hero-content h1 {
+                font-size: 1.8rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            #google_translate_element {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Notice Bar -->
+    <!-- <div class="notice-bar">
+        <div class="container">
+            <p class="m-0">🌱 Special Offer! Get 20% off on soil testing this month. Limited spots available!</p>
+        </div>
+    </div> -->
+
+    <!-- Header -->
+    <header class="sticky-header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="#">FarmGenius</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#services">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="crop-disease.html">Disease Detection</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#mission">Mission & Vision</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#contact">Contact</a>
+                        </li>
+                    </ul>
+                    <!-- Google Translate Widget -->
+                    <div id="google_translate_element"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-slide active" style="background-image: url('https://images.unsplash.com/photo-1500937386664-56d1dfef3854?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80');">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <h1>Transforming Agriculture with Technology</h1>
+                <p>We provide innovative solutions to help farmers increase yield, reduce costs, and maximize profits.</p>
+                <button class="btn btn-cta">Get Started</button>
+            </div>
+        </div>
+         <div class="hero-slide" style="background-image: url('Assests/3.jpg');">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <h1>A.I.-Driven</h1>
+                <p>We provide fully AI driven web app and make sure farmer get accurate guidance.</p>
+                <button class="btn btn-cta">Learn More</button>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('Assests/1.png');">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <h1>Expert Crop Advisory Services</h1>
+                <p>Our team of agricultural experts provides personalized advice for your farming needs.</p>
+                <button class="btn btn-cta">Learn More</button>
+            </div>
+        </div>
+        <div class="hero-slide" style="background-image: url('Assests/2.webp');">
+            <div class="hero-overlay"></div>
+            <div class="container hero-content">
+                <h1>Connecting Farmers to Markets</h1>
+                <p>We help farmers get the best prices for their produce through direct market linkages.</p>
+                <button class="btn btn-cta">Explore Services</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About Us</h2>
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="about-img">
+                        <img src="Assests/4.jpg" alt="Farmers working" class="img-fluid">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h3>We Are Committed to Farmers' Success</h3>
+                    <p>FarmGenius is an <b>AI-driven</b> agriculture platform designed to <b>remove middlemen</b> and <b>empower farmers with knowledge</b>, fair pricing, and <b>sustainable practices</b>.</p>
+                    <p>It provides farmers with <b>direct market access</b>, <b>soil and crop intelligence</b>, <b>chemical safety guidance</b>, <b>and digital financial literacy in their own language</b>.</p>
+                    <p>The platform combines <b>AI chatbot, soil testing integration, weather forecasting, and government scheme awareness to ensure farmers get higher yield, more income, and safer farming</b>.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="services bg-light">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-seedling"></i>
+                        </div>
+                        <h3>Crop Advisory</h3>
+                        <p>Get AI advice on crop selection, planting techniques, pest management, and harvesting methods tailored to your specific conditions.</p>
+                        <a href="#" class="btn btn-outline-success mt-3">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-vial"></i>
+                        </div>
+                        <h3>Soil Testing Refrence</h3>
+                        <p>Comprehensive soil analysis to determine nutrient levels, pH, and composition with detailed recommendations for improvement. </p>
+                        <p>Do this with Soil lab Tie-ups</p>
+                        <a href="#" class="btn btn-outline-success mt-3">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h3>Market Linkage</h3>
+                        <p>Connect directly with buyers, processors, and exporters to get the best prices for your produce without middlemen.</p>
+                        <a href="#" class="btn btn-outline-success mt-3">Learn More</a>
+                    </div>
+                </div>
+            </div>
+                        <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <h3>AI assistance</h3>
+                        <p>This is a chat bot which give information about banned chemicals, crop eduction etc these all work we done in our web app</p>
+                        <a href="Ai.html" class="btn btn-outline-success mt-3">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-flask"></i>
+                        </div>
+                        <h3>Banned chemical awareness</h3>
+                        <p>We spread awareness of reduce the use of banned chemicals to improve health ratio.</p>
+                        <p>also <b>provide alternative of banned chemical</b></p>
+                        <a href="#" class="btn btn-outline-success mt-3">Learn More</a>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="service-card p-4 text-center">
+                        <div class="service-icon">
+                            <i class="fas fa-landmark""></i>
+                        </div>
+                        <h3>Government scheme and Policy</h3>
+                        <p>We give update and information to farmer about new schemeand policy of Government.</p>
+                        <a href="#" class="btn btn-outline-success mt-3">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mission & Vision Section -->
+    <section id="mission" class="mission-vision">
+        <div class="container">
+            <h2 class="section-title">Mission & Vision</h2>
+            <div class="mission-text">
+                <h3 class="mb-4">Our Mission</h3>
+                <p class="lead">“To empower farmers with knowledge, technology, and direct market access by providing AI-driven crop guidance, soil & chemical awareness, and a transparent farmer-to-consumer platform."</p>
+                <p class="lead">that <b>increase productivity, improve sustainability, and enhance profitability</b>.</p>
+                
+                <h3 class="mt-5 mb-4">Our Vision</h3>
+                <p class="lead">“To build a sustainable, fair, and digitally connected agriculture ecosystem where farmers earn more, consumers get safer food, and India leads in smart farming innovation.</p>
+                <p class="lead">To create a world where farming is profitable, sustainable, and attractive to future generations through innovation and knowledge sharing.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="row">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="contact-form">
+                        <h3 class="mb-4">Get In Touch</h3>
+                        <form>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Your Name" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Your Email" required>
+                            </div>
+                            <div class="mb-3">
+                                <textarea class="form-control" rows="5" placeholder="Your Message" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-cta w-100">Send Message</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="map-container">
+                        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3023.621465758859!2d-74.00594938459418!3d40.71278467932681!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25a23c7ad6e0f%3A0x82b52c2a0c74e2c1!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1645481689454!5m2!1sen!2s" width="100%" height="400" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>AgriServices</h5>
+                    <p>Transforming agriculture through innovation and technology.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>&copy; 2023 AgriServices. All rights reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Floating Buttons -->
+    <a href="#" class="floating-btn chatbot-btn">
+        <i class="fas fa-robot"></i>
+    </a>
+    
+    <a href="crop-disease.html" class="floating-btn disease-btn">
+        <i class="fas fa-bug"></i>
+    </a>
+
+    <!-- Chatbot Window -->
+    <div class="chatbot-window">
+        <div class="chat-header">
+            <h5 class="m-0">AgriBot Assistant</h5>
+            <button class="btn-close btn-close-white" id="close-chat"></button>
+        </div>
+        <div class="chat-messages d-flex flex-column" id="chat-messages">
+            <div class="message bot-message">
+                Hello! I'm AgriBot. How can I help you with your farming questions today?
+            </div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Type your message...">
+            <button class="send-btn" id="send-message">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en', includedLanguages: 'en,hi,ur,ta,te,bn,ml,gu,pa,mr,kn', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                'google_translate_element'
+            );
+            
+            // Remove the Google Translate top banner
+            var googleBanner = document.querySelector(".goog-te-banner-frame");
+            if (googleBanner) {
+                googleBanner.style.display = "none";
+            }
+            
+            // Remove the "powered by" text
+            var poweredBy = document.querySelector(".goog-logo-link");
+            if (poweredBy) {
+                poweredBy.style.display = "none";
+            }
+            
+            // Remove the "about" text
+            var about = document.querySelector(".goog-te-ftab-link");
+            if (about) {
+                about.style.display = "none";
+            }
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <script>
+        // Hero Slideshow
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.hero-slide');
+        
+        function showSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[index].classList.add('active');
+        }
+        
+        function nextSlide() {
+            currentSlide = (currentSlide + 1) % slides.length;
+            showSlide(currentSlide);
+        }
+        
+        // Change slide every 5 seconds
+        setInterval(nextSlide, 5000);
+        
+        // Chatbot functionality
+        $(document).ready(function() {
+            $('.chatbot-btn').click(function(e) {
+                e.preventDefault();
+                $('.chatbot-window').css('display', 'flex');
+            });
+            
+            $('#close-chat').click(function() {
+                $('.chatbot-window').hide();
+            });
+            
+            $('#send-message').click(sendMessage);
+            $('#user-input').keypress(function(e) {
+                if(e.which == 13) {
+                    sendMessage();
+                }
+            });
+            
+            function sendMessage() {
+                const userInput = $('#user-input').val().trim();
+                if (userInput) {
+                    // Add user message
+                    $('#chat-messages').append(`
+                        <div class="message user-message">
+                            ${userInput}
+                        </div>
+                    `);
+                    
+                    // Clear input
+                    $('#user-input').val('');
+                    
+                    // Scroll to bottom
+                    $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+                    
+                    // Simulate bot response after a short delay
+                    setTimeout(() => {
+                        // Simple response logic
+                        let botResponse = "I'm sorry, I didn't understand that. Can you please rephrase?";
+                        
+                        if (userInput.toLowerCase().includes('hello') || userInput.toLowerCase().includes('hi')) {
+                            botResponse = "Hello there! How can I assist with your farming questions today?";
+                        } else if (userInput.toLowerCase().includes('soil') || userInput.toLowerCase().includes('fertilizer')) {
+                            botResponse = "For soil and fertilizer questions, I recommend getting a soil test first. This will help determine the right nutrients for your crops.";
+                        } else if (userInput.toLowerCase().includes('pest') || userInput.toLowerCase().includes('disease')) {
+                            botResponse = "For pest and disease issues, please describe the symptoms you're seeing or use our disease detection tool for immediate assistance.";
+                        } else if (userInput.toLowerCase().includes('market') || userInput.toLowerCase().includes('price')) {
+                            botResponse = "We can help connect you with buyers for your produce. Please tell me what crops you're looking to sell and your approximate quantity.";
+                        }
+                        
+                        $('#chat-messages').append(`
+                            <div class="message bot-message">
+                                ${botResponse}
+                            </div>
+                        `);
+                        
+                        // Scroll to bottom again
+                        $('#chat-messages').scrollTop($('#chat-messages')[0].scrollHeight);
+                    }, 1000);
+                }
+            }
+            
+            // Continuously check for and remove Google Translate banner elements
+            setInterval(function() {
+                // Remove all banner elements
+                $('.goog-te-banner-frame').remove();
+                $('.goog-te-balloon-frame').remove();
+                $('.goog-te-ftab-frame').remove();
+                $('.goog-te-banner').remove();
+                $('.goog-te-banner-content').remove();
+                $('.goog-te-banner-bottom').remove();
+                
+                // Remove the "powered by" text
+                $('.goog-logo-link').remove();
+                
+                // Remove the "about" text
+                $('.goog-te-ftab-link').remove();
+                
+                // Remove any iframes that might contain the banner
+                $('iframe').each(function() {
+                    if ($(this).attr('src') && $(this).attr('src').indexOf('translate.google') !== -1) {
+                        $(this).remove();
+                    }
+                });
+                
+                // Remove any divs with translation content
+                $('div').each(function() {
+                    if ($(this).text().includes('Google Translate') || 
+                        $(this).text().includes('The content of this secure page will be sent to Google for translation') ||
+                        $(this).text().includes('Translated into') ||
+                        $(this).text().includes('Show original')) {
+                        $(this).remove();
+                    }
+                });
+            }, 100);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - FarmGenius</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --farm-green: #2e7d32;
+            --accent: #ff9933;
+            --light-green: #4caf50;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --dark-gray: #333333;
+            --sidebar-width: 300px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-color: #f5f5f5;
+            padding-top: 76px; /* Account for fixed header */
+        }
+
+        /* Header */
+        .sticky-header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            background: linear-gradient(to right, #ff9933, #fff, #138808);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 24px;
+            color: var(--farm-green) !important;
+        }
+
+        .nav-link {
+            color: var(--dark-gray) !important;
+            font-weight: 500;
+            margin: 0 10px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover {
+            color: var(--farm-green) !important;
+            transform: translateY(-2px);
+        }
+
+        /* Google Translate Customization */
+        #google_translate_element {
+            margin-left: 15px;
+        }
+        
+        .goog-te-gadget {
+            font-family: 'Roboto', sans-serif !important;
+            color: transparent !important;
+        }
+        
+        .goog-te-gadget .goog-te-combo {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: white;
+            font-size: 14px;
+            color: #333;
+        }
+        
+        .goog-te-gadget .goog-te-combo:focus {
+            outline: none;
+            border-color: var(--farm-green);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+        }
+
+        /* Main Content */
+        .main-container {
+            display: flex;
+            min-height: calc(100vh - 76px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background-color: var(--white);
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+        }
+
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .sidebar-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--farm-green);
+        }
+
+        .new-chat-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .new-chat-btn:hover {
+            background-color: #ff8c1a;
+            transform: rotate(90deg);
+        }
+
+        .chat-history {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .chat-history-item {
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-history-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .chat-history-item.active {
+            background-color: #e8f5e9;
+            border-left: 3px solid var(--farm-green);
+        }
+
+        .chat-icon {
+            margin-right: 10px;
+            color: var(--farm-green);
+        }
+
+        .chat-title {
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .chat-date {
+            font-size: 12px;
+            color: #888;
+        }
+
+        /* Chat Container */
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--white);
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
+
+        .chat-title-main {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--farm-green);
+            margin: 0;
+        }
+
+        .chat-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin: 5px 0 0;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 80%;
+            margin-bottom: 15px;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .bot-message {
+            background: #e8f5e9;
+            border-top-left-radius: 5px;
+            align-self: flex-start;
+        }
+
+        .user-message {
+            background: var(--farm-green);
+            color: white;
+            border-top-right-radius: 5px;
+            align-self: flex-end;
+        }
+
+        .message-time {
+            font-size: 11px;
+            margin-top: 5px;
+            opacity: 0.7;
+            text-align: right;
+        }
+
+        .user-message .message-time {
+            text-align: right;
+        }
+
+        .bot-message .message-time {
+            text-align: left;
+        }
+
+        .chat-input-container {
+            padding: 15px 20px;
+            border-top: 1px solid #eee;
+            background-color: #f9f9f9;
+            display: flex;
+            align-items: center;
+        }
+
+        .chat-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 24px;
+            margin-right: 10px;
+            font-size: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        .chat-input:focus {
+            border-color: var(--farm-green);
+            box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.1);
+        }
+
+        .send-btn {
+            background: var(--farm-green);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: var(--light-green);
+            transform: scale(1.05);
+        }
+
+        /* Welcome message */
+        .welcome-message {
+            text-align: center;
+            margin: 40px 20px;
+            color: #666;
+        }
+
+        .welcome-icon {
+            font-size: 48px;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .sidebar {
+                width: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+                max-height: 200px;
+            }
+            
+            #google_translate_element {
+                margin: 10px 0;
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .sidebar {
+                padding: 15px;
+            }
+            
+            .chat-header {
+                padding: 15px;
+            }
+            
+            .chat-messages {
+                padding: 15px;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+            
+            .chat-input-container {
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-header">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">FarmGenius</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html#about">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html#services">Services</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="crop-disease.html">Disease Detection</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="ai.html">AI Assistant</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="index.html#contact">Contact</a>
+                        </li>
+                    </ul>
+                    <!-- Google Translate Widget -->
+                    <div id="google_translate_element"></div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Sidebar with chat history -->
+        <div class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title">Chat History</div>
+                <button class="new-chat-btn" id="newChatBtn">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+            <ul class="chat-history" id="chatHistory">
+                <li class="chat-history-item active">
+                    <i class="fas fa-comment chat-icon"></i>
+                    <div class="chat-title">Today's Discussion</div>
+                    <div class="chat-date">Now</div>
+                </li>
+                <li class="chat-history-item">
+                    <i class="fas fa-comment chat-icon"></i>
+                    <div class="chat-title">Tomato Blight Issue</div>
+                    <div class="chat-date">Yesterday</div>
+                </li>
+                <li class="chat-history-item">
+                    <i class="fas fa-comment chat-icon"></i>
+                    <div class="chat-title">Soil Nutrition Advice</div>
+                    <div class="chat-date">Sep 15</div>
+                </li>
+                <li class="chat-history-item">
+                    <i class="fas fa-comment chat-icon"></i>
+                    <div class="chat-title">Crop Rotation Planning</div>
+                    <div class="chat-date">Sep 12</div>
+                </li>
+                <li class="chat-history-item">
+                    <i class="fas fa-comment chat-icon"></i>
+                    <div class="chat-title">Water Management</div>
+                    <div class="chat-date">Sep 10</div>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Chat container -->
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2 class="chat-title-main">FarmGeniusAI Assistant</h2>
+                <p class="chat-subtitle">Ask me anything about crops, diseases, or farming techniques</p>
+            </div>
+            
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message" id="welcomeMessage">
+                    <div class="welcome-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>Hello! I'm AgriAI</h3>
+                    <p>I can help you with crop advice, disease identification, soil management, and more.</p>
+                    <p>Try asking me something like:</p>
+                    <p>"How to treat tomato blight?" or "What's the best fertilizer for wheat?"</p>
+                </div>
+                
+                <!-- Messages will be added here dynamically -->
+            </div>
+            
+            <div class="chat-input-container">
+                <input type="text" class="chat-input" id="userInput" placeholder="Type your message here...">
+                <button class="send-btn" id="sendMessage">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap & jQuery JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement(
+                {pageLanguage: 'en', includedLanguages: 'en,hi,ur,ta,te,bn,ml,gu,pa,mr,kn', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+                'google_translate_element'
+            );
+        }
+    </script>
+    <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    
+    <script>
+        $(document).ready(function() {
+            const chatMessages = $('#chatMessages');
+            const userInput = $('#userInput');
+            const sendBtn = $('#sendMessage');
+            const welcomeMessage = $('#welcomeMessage');
+            const chatHistory = $('#chatHistory');
+            const newChatBtn = $('#newChatBtn');
+            
+            let currentChat = 'Today\'s Discussion';
+            
+            // Focus on input field
+            userInput.focus();
+            
+            // Send message on button click
+            sendBtn.click(sendMessage);
+            
+            // Send message on Enter key
+            userInput.keypress(function(e) {
+                if(e.which == 13) {
+                    sendMessage();
+                }
+            });
+            
+            // New chat button
+            newChatBtn.click(function() {
+                // In a real application, this would create a new chat session
+                alert('New chat session started!');
+                chatMessages.empty();
+                welcomeMessage.remove();
+                
+                // Add welcome message for new chat
+                chatMessages.append(`
+                    <div class="message bot-message">
+                        <div>Hello! I'm AgriAI, your farming assistant. How can I help you today?</div>
+                        <div class="message-time">${getCurrentTime()}</div>
+                    </div>
+                `);
+                
+                // Scroll to bottom
+                scrollToBottom();
+                
+                // Update active chat in history
+                chatHistory.find('.active').removeClass('active');
+                chatHistory.prepend(`
+                    <li class="chat-history-item active">
+                        <i class="fas fa-comment chat-icon"></i>
+                        <div class="chat-title">New Conversation</div>
+                        <div class="chat-date">Now</div>
+                    </li>
+                `);
+            });
+            
+            // Chat history item click
+            chatHistory.on('click', '.chat-history-item', function() {
+                chatHistory.find('.active').removeClass('active');
+                $(this).addClass('active');
+                currentChat = $(this).find('.chat-title').text();
+                
+                // Simulate loading chat history
+                chatMessages.empty();
+                chatMessages.append(`
+                    <div class="message bot-message">
+                        <div>Welcome back to your previous conversation about "${currentChat}"</div>
+                        <div class="message-time">${getCurrentTime()}</div>
+                    </div>
+                `);
+                
+                // Add sample previous messages based on chat title
+                if (currentChat === 'Tomato Blight Issue') {
+                    chatMessages.append(`
+                        <div class="message user-message">
+                            <div>My tomato plants have dark spots on leaves</div>
+                            <div class="message-time">Yesterday, 10:23 AM</div>
+                        </div>
+                        <div class="message bot-message">
+                            <div>That sounds like early blight. Could you describe the spots in more detail? Are they circular with concentric rings?</div>
+                            <div class="message-time">Yesterday, 10:24 AM</div>
+                        </div>
+                    `);
+                } else if (currentChat === 'Soil Nutrition Advice') {
+                    chatMessages.append(`
+                        <div class="message user-message">
+                            <div>What's the best way to improve clay soil?</div>
+                            <div class="message-time">Sep 15, 2:15 PM</div>
+                        </div>
+                        <div class="message bot-message">
+                            <div>For clay soil, I recommend adding organic matter like compost or well-rotted manure. You might also consider adding gypsum to improve soil structure.</div>
+                            <div class="message-time">Sep 15, 2:16 PM</div>
+                        </div>
+                    `);
+                }
+                
+                scrollToBottom();
+            });
+            
+            function sendMessage() {
+                const message = userInput.val().trim();
+                
+                if (message) {
+                    // Remove welcome message on first user message
+                    if (welcomeMessage.is(':visible')) {
+                        welcomeMessage.remove();
+                    }
+                    
+                    // Add user message
+                    chatMessages.append(`
+                        <div class="message user-message">
+                            <div>${message}</div>
+                            <div class="message-time">${getCurrentTime()}</div>
+                        </div>
+                    `);
+                    
+                    // Clear input
+                    userInput.val('');
+                    
+                    // Scroll to bottom
+                    scrollToBottom();
+                    
+                    // Simulate AI response after a short delay
+                    setTimeout(() => {
+                        // Simple response logic
+                        let botResponse = "I'm not sure how to help with that. Can you provide more details?";
+                        
+                        if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                            botResponse = "Hello there! How can I assist with your farming questions today?";
+                        } else if (message.toLowerCase().includes('tomato') && message.toLowerCase().includes('blight')) {
+                            botResponse = "Tomato blight is a common fungal disease. For treatment, remove affected leaves, apply copper-based fungicide, and avoid overhead watering. Would you like more specific advice?";
+                        } else if (message.toLowerCase().includes('soil') || message.toLowerCase().includes('fertilizer')) {
+                            botResponse = "For soil and fertilizer questions, I recommend getting a soil test first. This will help determine the right nutrients for your crops.";
+                        } else if (message.toLowerCase().includes('pest') || message.toLowerCase().includes('insect')) {
+                            botResponse = "For pest issues, please describe the insects or damage you're seeing. I can recommend organic or chemical solutions based on your preferences.";
+                        } else if (message.toLowerCase().includes('water') || message.toLowerCase().includes('irrigation')) {
+                            botResponse = "Proper watering is crucial for crops. Most vegetables need about 1 inch of water per week. Drip irrigation is often the most efficient method.";
+                        } else if (message.toLowerCase().includes('crop') && message.toLowerCase().includes('rotation')) {
+                            botResponse = "Crop rotation helps prevent soil depletion and reduces disease. A basic 3-year rotation divides crops into groups: legumes, roots, and leafy greens.";
+                        }
+                        
+                        chatMessages.append(`
+                            <div class="message bot-message">
+                                <div>${botResponse}</div>
+                                <div class="message-time">${getCurrentTime()}</div>
+                            </div>
+                        `);
+                        
+                        // Scroll to bottom again
+                        scrollToBottom();
+                    }, 1000);
+                }
+            }
+            
+            function scrollToBottom() {
+                chatMessages.scrollTop(chatMessages[0].scrollHeight);
+            }
+            
+            function getCurrentTime() {
+                const now = new Date();
+                return now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+            }
+        });
+    </script>
+</body>
+</html>

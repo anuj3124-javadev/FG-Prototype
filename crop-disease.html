@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crop Disease Detection - FarmGenius</title>
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --farm-green: #2e7d32;
+      --accent: #ff9933;
+      --light-green: #4caf50;
+      --white: #ffffff;
+      --light-gray: #f8f9fa;
+      --dark-gray: #333333;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+      background: #f0f8f5;
+      padding-top: 76px; /* Account for fixed header */
+    }
+
+    /* Header */
+    .sticky-header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      background: linear-gradient(to right, #ff9933, #fff, #138808);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-brand {
+      font-weight: 700;
+      font-size: 24px;
+      color: var(--farm-green) !important;
+    }
+
+    .nav-link {
+      color: var(--dark-gray) !important;
+      font-weight: 500;
+      margin: 0 10px;
+      transition: all 0.3s ease;
+    }
+
+    .nav-link:hover {
+      color: var(--farm-green) !important;
+      transform: translateY(-2px);
+    }
+
+    /* Google Translate Customization */
+    #google_translate_element {
+      margin-left: 15px;
+    }
+    
+    .goog-te-gadget {
+      font-family: 'Roboto', sans-serif !important;
+      color: transparent !important;
+    }
+    
+    .goog-te-gadget .goog-te-combo {
+      padding: 8px 12px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      background-color: white;
+      font-size: 14px;
+      color: #333;
+    }
+    
+    .goog-te-gadget .goog-te-combo:focus {
+      outline: none;
+      border-color: var(--farm-green);
+      box-shadow: 0 0 0 2px rgba(46, 125, 50, 0.2);
+    }
+
+    /* Main Container */
+    .main-container {
+      display: flex;
+      flex-wrap: wrap;
+      min-height: calc(100vh - 76px);
+      padding: 20px;
+      gap: 20px;
+    }
+
+    .left-section, .right-section {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 25px;
+    }
+
+    .left-section {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .right-section {
+      flex: 1;
+      min-width: 300px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .section-title {
+      color: var(--farm-green);
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    /* Upload and Camera Styles */
+    .upload-container {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .desktop-upload {
+      display: block;
+    }
+
+    .mobile-upload {
+      display: none;
+    }
+
+    .btn-primary {
+      background-color: var(--farm-green);
+      border: none;
+      padding: 12px 25px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--light-green);
+      transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+      background-color: var(--accent);
+      border: none;
+      padding: 12px 25px;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background-color: #ff8c1a;
+      transform: translateY(-2px);
+    }
+
+    /* Preview Area */
+    .preview-container {
+      width: 100%;
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #preview {
+      max-width: 100%;
+      max-height: 300px;
+      border: 2px dashed #ddd;
+      border-radius: 10px;
+      padding: 5px;
+    }
+
+    video, canvas {
+      margin-top: 20px;
+      max-width: 100%;
+      border-radius: 10px;
+    }
+
+    /* Analysis Results */
+    .analysis-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      text-align: center;
+      color: #888;
+    }
+
+    .analysis-results {
+      display: none;
+    }
+
+    .disease-card {
+      background: var(--light-gray);
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .disease-name {
+      color: var(--farm-green);
+      font-weight: 600;
+    }
+
+    .confidence {
+      display: inline-block;
+      padding: 3px 8px;
+      background: var(--accent);
+      color: white;
+      border-radius: 15px;
+      font-size: 12px;
+      margin-left: 10px;
+    }
+
+    .solution-list {
+      padding-left: 20px;
+      margin-top: 10px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+      .desktop-upload {
+        display: none;
+      }
+      
+      .mobile-upload {
+        display: block;
+      }
+      
+      .main-container {
+        flex-direction: column;
+      }
+      
+      .left-section, .right-section {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .left-section, .right-section {
+        padding: 15px;
+      }
+      
+      #google_translate_element {
+        margin: 10px 0;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="sticky-header">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="index.html">FarmGenius</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="index.html">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#about">About</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#services">Services</a>
+            </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="ai.html">AI Assistant</a>
+                        </li>
+            <li class="nav-item">
+              <a class="nav-link" href="crop-disease.html">Disease Detection</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="index.html#contact">Contact</a>
+            </li>
+          </ul>
+          <!-- Google Translate Widget -->
+          <div id="google_translate_element"></div>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <!-- Left Section - Image Upload/Capture -->
+    <div class="left-section">
+      <h2 class="section-title">Upload or Capture Image</h2>
+      
+      <!-- Desktop Upload (shown on larger screens) -->
+      <div class="upload-container desktop-upload">
+        <p>Upload an image of your crop for disease analysis</p>
+        <input type="file" id="fileInput" accept="image/*" class="form-control mb-3">
+        <button id="analyzeBtn" class="btn btn-primary w-100">Analyze Image</button>
+      </div>
+      
+      <!-- Mobile Upload (shown on smaller screens) -->
+      <div class="upload-container mobile-upload">
+        <p>Upload an image or capture using camera</p>
+        <input type="file" id="mobileFileInput" accept="image/*" class="form-control mb-3">
+        <button id="cameraBtn" class="btn btn-secondary w-100 mb-3">Open Camera</button>
+        <button id="captureBtn" class="btn btn-secondary w-100 mb-3" style="display:none;">Capture Photo</button>
+        <button id="mobileAnalyzeBtn" class="btn btn-primary w-100">Analyze Image</button>
+      </div>
+      
+      <!-- Preview Area -->
+      <div class="preview-container">
+        <img id="preview" alt="Image Preview" style="display:none;" />
+        <video id="video" autoplay playsinline style="display:none;"></video>
+        <canvas id="canvas" style="display:none;"></canvas>
+      </div>
+    </div>
+    
+    <!-- Right Section - Analysis Results -->
+    <div class="right-section">
+      <h2 class="section-title">Disease Analysis Results</h2>
+      
+      <div class="analysis-placeholder" id="analysisPlaceholder">
+        <div>
+          <i class="fas fa-search fa-3x mb-3" style="color: #ddd;"></i>
+          <p>Upload an image to analyze for crop diseases</p>
+          <p>Our AI will detect diseases and provide treatment solutions</p>
+        </div>
+      </div>
+      
+      <div class="analysis-results" id="analysisResults">
+        <div class="disease-card">
+          <h4 class="disease-name">Tomato Early Blight <span class="confidence">92% confidence</span></h4>
+          <p><strong>Description:</strong> Fungal disease that affects leaves, stems, and fruits of tomato plants.</p>
+          <p><strong>Recommended Solutions:</strong></p>
+          <ul class="solution-list">
+            <li>Remove infected leaves and dispose of them properly</li>
+            <li>Apply copper-based fungicides every 7-10 days</li>
+            <li>Improve air circulation around plants</li>
+            <li>Water at the base of plants to avoid wetting foliage</li>
+          </ul>
+        </div>
+        
+        <div class="prevention-tips mt-4">
+          <h5>Prevention Tips for Future</h5>
+          <ul class="solution-list">
+            <li>Rotate crops annually to prevent disease buildup</li>
+            <li>Use disease-resistant tomato varieties</li>
+            <li>Ensure proper spacing between plants</li>
+            <li>Apply mulch to prevent soil splashing onto leaves</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap & jQuery JS -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+  
+  <!-- Google Translate Script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement(
+        {pageLanguage: 'en', includedLanguages: 'en,hi,ur,ta,te,bn,ml,gu,pa,mr,kn', layout: google.translate.TranslateElement.InlineLayout.SIMPLE},
+        'google_translate_element'
+      );
+    }
+  </script>
+  <script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+  
+  <script>
+    // DOM Elements
+    const fileInput = document.getElementById('fileInput');
+    const mobileFileInput = document.getElementById('mobileFileInput');
+    const preview = document.getElementById('preview');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const cameraBtn = document.getElementById('cameraBtn');
+    const captureBtn = document.getElementById('captureBtn');
+    const analyzeBtn = document.getElementById('analyzeBtn');
+    const mobileAnalyzeBtn = document.getElementById('mobileAnalyzeBtn');
+    const analysisPlaceholder = document.getElementById('analysisPlaceholder');
+    const analysisResults = document.getElementById('analysisResults');
+
+    // File upload preview (for desktop)
+    fileInput.addEventListener('change', (event) => {
+      handleFileUpload(event.target.files[0]);
+    });
+
+    // File upload preview (for mobile)
+    mobileFileInput.addEventListener('change', (event) => {
+      handleFileUpload(event.target.files[0]);
+    });
+
+    function handleFileUpload(file) {
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          preview.src = e.target.result;
+          preview.style.display = 'block';
+          video.style.display = 'none';
+          canvas.style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Open camera (for mobile)
+    cameraBtn.addEventListener('click', async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        video.srcObject = stream;
+        video.style.display = 'block';
+        captureBtn.style.display = 'block';
+        preview.style.display = 'none';
+        canvas.style.display = 'none';
+      } catch (err) {
+        alert('Camera access denied or not available');
+      }
+    });
+
+    // Capture photo from video (for mobile)
+    captureBtn.addEventListener('click', () => {
+      const context = canvas.getContext('2d');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      context.drawImage(video, 0, 0, canvas.width, canvas.height);
+      
+      // Convert canvas to image and display
+      preview.src = canvas.toDataURL('image/png');
+      preview.style.display = 'block';
+      canvas.style.display = 'none';
+      video.style.display = 'none';
+
+      // Stop the video stream
+      const stream = video.srcObject;
+      const tracks = stream.getTracks();
+      tracks.forEach(track => track.stop());
+      
+      captureBtn.style.display = 'none';
+    });
+
+    // Analyze image (both desktop and mobile)
+    analyzeBtn.addEventListener('click', analyzeImage);
+    mobileAnalyzeBtn.addEventListener('click', analyzeImage);
+
+    function analyzeImage() {
+      if (preview.style.display === 'block') {
+        // Show loading state
+        analysisPlaceholder.innerHTML = `
+          <div class="text-center">
+            <div class="spinner-border text-success" role="status">
+              <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3">Analyzing image...</p>
+          </div>
+        `;
+        
+        // Simulate AI analysis (in a real app, this would be an API call)
+        setTimeout(() => {
+          analysisPlaceholder.style.display = 'none';
+          analysisResults.style.display = 'block';
+        }, 2000);
+      } else {
+        alert('Please upload or capture an image first');
+      }
+    }
+
+    // Responsive check
+    function checkScreenSize() {
+      if (window.innerWidth <= 992) {
+        document.querySelector('.desktop-upload').style.display = 'none';
+        document.querySelector('.mobile-upload').style.display = 'block';
+      } else {
+        document.querySelector('.desktop-upload').style.display = 'block';
+        document.querySelector('.mobile-upload').style.display = 'none';
+      }
+    }
+
+    // Initial check and event listener
+    checkScreenSize();
+    window.addEventListener('resize', checkScreenSize);
+  </script>
+</body>
+</html>
