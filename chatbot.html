@@ -578,64 +578,122 @@
                         </div>
                     `);
                 }
+                else if (currentChat === 'Provide rice life cycle') {
+                    chatMessages.append(`
+                        <div class="message user-message">
+                            <div>Can you provide the life cycle of rice?</div>
+                            <div class="message-time">Sep 15, 3:00 PM</div>
+                        </div>
+                        <div class="message bot-message">
+                            <div>The rice life cycle includes germination, seedling, tillering, panicle initiation, flowering, grain filling, and maturity. Would you like details about any specific stage?</div>
+                            <div class="message-time">Sep 15, 3:01 PM</div>
+                        </div>
+                    `);
+                }
                 
                 scrollToBottom();
             });
             
-            function sendMessage() {
-                const message = userInput.val().trim();
-                
-                if (message) {
-                    // Remove welcome message on first user message
-                    if (welcomeMessage.is(':visible')) {
-                        welcomeMessage.remove();
-                    }
-                    
-                    // Add user message
-                    chatMessages.append(`
-                        <div class="message user-message">
-                            <div>${message}</div>
-                            <div class="message-time">${getCurrentTime()}</div>
-                        </div>
-                    `);
-                    
-                    // Clear input
-                    userInput.val('');
-                    
-                    // Scroll to bottom
-                    scrollToBottom();
-                    
-                    // Simulate AI response after a short delay
-                    setTimeout(() => {
-                        // Simple response logic
-                        let botResponse = "I'm not sure how to help with that. Can you provide more details?";
-                        
-                        if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
-                            botResponse = "Hello there! How can I assist with your farming questions today?";
-                        } else if (message.toLowerCase().includes('tomato') && message.toLowerCase().includes('blight')) {
-                            botResponse = "Tomato blight is a common fungal disease. For treatment, remove affected leaves, apply copper-based fungicide, and avoid overhead watering. Would you like more specific advice?";
-                        } else if (message.toLowerCase().includes('soil') || message.toLowerCase().includes('fertilizer')) {
-                            botResponse = "For soil and fertilizer questions, I recommend getting a soil test first. This will help determine the right nutrients for your crops.";
-                        } else if (message.toLowerCase().includes('pest') || message.toLowerCase().includes('insect')) {
-                            botResponse = "For pest issues, please describe the insects or damage you're seeing. I can recommend organic or chemical solutions based on your preferences.";
-                        } else if (message.toLowerCase().includes('water') || message.toLowerCase().includes('irrigation')) {
-                            botResponse = "Proper watering is crucial for crops. Most vegetables need about 1 inch of water per week. Drip irrigation is often the most efficient method.";
-                        } else if (message.toLowerCase().includes('crop') && message.toLowerCase().includes('rotation')) {
-                            botResponse = "Crop rotation helps prevent soil depletion and reduces disease. A basic 3-year rotation divides crops into groups: legumes, roots, and leafy greens.";
-                        }
-                        
-                        chatMessages.append(`
-                            <div class="message bot-message">
-                                <div>${botResponse}</div>
-                                <div class="message-time">${getCurrentTime()}</div>
-                            </div>
-                        `);
-                        
-                        // Scroll to bottom again
-                        scrollToBottom();
-                    }, 1000);
-                }
+           function sendMessage() {
+    const message = userInput.val().trim();
+    
+    if (message) {
+        // Remove welcome message on first user message
+        if (welcomeMessage.is(':visible')) {
+            welcomeMessage.remove();
+        }
+        
+        // Add user message
+        chatMessages.append(`
+            <div class="message user-message">
+                <div>${message}</div>
+                <div class="message-time">${getCurrentTime()}</div>
+            </div>
+        `);
+        
+        // Clear input
+        userInput.val('');
+        
+        // Scroll to bottom
+        scrollToBottom();
+        
+        // Simulate AI response after a short delay
+        setTimeout(() => {
+            let botResponse = "I'm not sure how to help with that. Can you provide more details?";
+            
+            // Rice life cycle response
+            if (message.toLowerCase().includes('rice') && message.toLowerCase().includes('life cycle')) {
+                botResponse = `
+🌱 <b>Life Cycle of Rice (Week by Week)</b>
+
+<b>Week 1–2 → Seed Germination & Nursery Stage</b>  
+Seeds are soaked in water for 24–48 hours.  
+They sprout (tiny shoots and roots appear).  
+Seedlings are grown in a nursery bed. By end of week 2, seedlings are 5–6 inches tall.
+
+<b>Week 3–4 → Transplanting</b>  
+Seedlings (3–4 weeks old) are transplanted to the main field.  
+Field is flooded with 2–3 inches of water. Roots start spreading in soft soil.
+
+<b>Week 5–6 → Early Vegetative Growth</b>  
+Plants grow more leaves and tillers (side shoots).  
+Nitrogen fertilizer is usually added. Shallow water is maintained.
+
+<b>Week 7–8 → Maximum Tillering Stage  </b>
+Multiple tillers develop from the base → more panicles = more grains.  
+Weeds, pests, and diseases are managed carefully.
+
+<b>Week 9–10 → Stem Elongation  </b>
+Plants grow taller and leaves expand.  
+Water level maintained at 2–5 cm. Second fertilizer round added.
+
+<b>Week 11–13 → Panicle Initiation  </b>
+Flowering head (panicle) starts forming inside stem.  
+Critical stage — proper water and nutrients essential.
+
+<b>Week 14–16 → Booting & Flowering  </b>
+Panicles push out of leaf sheath (booting).  
+Flowers bloom and pollination occurs. Water management is crucial.
+
+<b>Week 17–20 → Grain Filling / Ripening  </b>
+Grains develop from milky → doughy → hard stage.  
+Plants turn slightly yellow. Irrigation reduced gradually.
+
+<b>Week 21–24 → Harvesting  </b>
+Leaves and stems turn golden-yellow. Grains mature.  
+Water drained, rice cut, and grains separated from straw.
+
+🔄<b> Summary (Rice Growth Stages)  </b>
+Germination (1–2 weeks) → Transplanting (3–4 weeks) → Tillering (5–8 weeks) → Stem Elongation (9–10 weeks) → Panicle Initiation (11–13 weeks) → Flowering (14–16 weeks) → Grain Filling (17–20 weeks) → Harvest (21–24 weeks)
+                `;
+            } 
+            else if (message.toLowerCase().includes('hello') || message.toLowerCase().includes('hi')) {
+                botResponse = "Hello there! How can I assist with your farming questions today?";
+            } else if (message.toLowerCase().includes('tomato') && message.toLowerCase().includes('blight')) {
+                botResponse = "Tomato blight is a common fungal disease. For treatment, remove affected leaves, apply copper-based fungicide, and avoid overhead watering. Would you like more specific advice?";
+            } else if (message.toLowerCase().includes('soil') || message.toLowerCase().includes('fertilizer')) {
+                botResponse = "For soil and fertilizer questions, I recommend getting a soil test first. This will help determine the right nutrients for your crops.";
+            } else if (message.toLowerCase().includes('pest') || message.toLowerCase().includes('insect')) {
+                botResponse = "For pest issues, please describe the insects or damage you're seeing. I can recommend organic or chemical solutions based on your preferences.";
+            } else if (message.toLowerCase().includes('water') || message.toLowerCase().includes('irrigation')) {
+                botResponse = "Proper watering is crucial for crops. Most vegetables need about 1 inch of water per week. Drip irrigation is often the most efficient method.";
+            } else if (message.toLowerCase().includes('crop') && message.toLowerCase().includes('rotation')) {
+                botResponse = "Crop rotation helps prevent soil depletion and reduces disease. A basic 3-year rotation divides crops into groups: legumes, roots, and leafy greens.";
             }
+            
+            // Append bot response
+            chatMessages.append(`
+                <div class="message bot-message">
+                    <div>${botResponse.replace(/\n/g, '<br>')}</div>
+                    <div class="message-time">${getCurrentTime()}</div>
+                </div>
+            `);
+            
+            scrollToBottom();
+        }, 1000);
+    }
+}
+
             
             function scrollToBottom() {
                 chatMessages.scrollTop(chatMessages[0].scrollHeight);
